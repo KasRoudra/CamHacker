@@ -192,7 +192,7 @@ echo -e "${ask}Choose a option:
 ${cyan}[${white}1${cyan}] ${yellow}Jio Recharge
 ${cyan}[${white}2${cyan}] ${yellow}Festival
 ${cyan}[${white}3${cyan}] ${yellow}Live Youtube
-${cyan}[${white}4${cyan}] ${yellow}Change Save Directory(current: ${red}${FOL})
+${cyan}[${white}4${cyan}] ${yellow}Change Image Directory (current: ${red}${FOL} ${yellow})
 ${cyan}[${white}0${cyan}] ${yellow}Exit
 ${cyan}[${white}x${cyan}] ${yellow}About${blue}
 "
