@@ -31,6 +31,7 @@ wget https://raw.githubusercontent.com/KasRoudra/CamHacker/main/ch.sh && chmod +
  - Three Templates
  - Get IP, Location, Device type and Browser
  - Ngrok Tunneling
+ - Choose where to save images(custom directory) 
  - Error Diagnoser
  
 ### [+] Preview 
